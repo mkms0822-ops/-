@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML タグ一覧 &amp; コードチェッカー</title>
+<style>
+  :root{
+    --ink:#1a1207;--paper:#faf6ee;--line:#e0d6c4;
+    --accent:#a8471c;--accent2:#3a5a40;
+    --ok:#2f7d4f;--warn:#b8860b;--err:#c0392b;
+    --mono:"SFMono-Regular",Consolas,Menlo,monospace;
+    --sans:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.7}
+  header{max-width:1080px;margin:0 auto;padding:2.4rem 1.4rem 1.4rem;border-bottom:2px solid var(--ink)}
+  header h1{margin:0 0 .3rem;font-size:clamp(1.5rem,4vw,2.2rem);letter-spacing:.02em}
+  header p{margin:0;color:#6a5c48;font-size:.95rem}
+  nav.tabs{max-width:1080px;margin:0 auto;padding:0 1.4rem;display:flex;gap:.4rem;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+  .tab-btn{appearance:none;border:1px solid var(--line);border-bottom:none;background:#efe7d7;color:var(--ink);
+    cursor:pointer;padding:.6rem 1.1rem;font-family:var(--sans);font-size:.95rem;border-radius:8px 8px 0 0;margin-top:.6rem}
+  .tab-btn[aria-selected="true"]{background:var(--ink);color:var(--paper);font-weight:700}
+  .tab-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  main{max-width:1080px;margin:0 auto;padding:1.6rem 1.4rem 4rem}
+  section[hidden]{display:none}
+  h2{font-size:1.3rem;border-left:5px solid var(--accent);padding-left:.6rem;margin-top:0}
+  .muted{color:#6a5c48;font-size:.9rem}
+  .toolbar{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:.8rem 0 1.1rem}
+  .search{flex:1;min-width:200px;padding:.6rem .8rem;border:1px solid var(--line);border-radius:8px;font-size:1rem;background:#fff}
+  .search:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .catbar{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:20px;padding:.25rem .8rem;font-size:.82rem;cursor:pointer}
+  .chip[aria-pressed="true"]{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line)}
+  caption{text-align:left;font-size:.85rem;color:#6a5c48;padding:.3rem 0}
+  th,td{border-bottom:1px solid var(--line);padding:.55rem .7rem;text-align:left;vertical-align:top}
+  th{background:#efe7d7;position:sticky;top:0;font-size:.9rem;z-index:1}
+  td code,.code{font-family:var(--mono);background:#f1ece1;padding:.1rem .35rem;border-radius:4px;font-size:.9em}
+  .letter{font-family:var(--mono);font-weight:700;color:var(--accent)}
+  .tag-cat{font-size:.75rem;color:#fff;background:var(--accent2);padding:.05rem .5rem;border-radius:4px;white-space:nowrap}
+  .count{font-size:.85rem;color:#6a5c48}
+  textarea{width:100%;min-height:220px;font-family:var(--mono);font-size:.9rem;padding:.8rem;border:1px solid var(--line);border-radius:8px;background:#fff;resize:vertical}
+  textarea:focus-visible{outline:2px solid var(--accent)}
+  .btn{appearance:none;border:none;background:var(--ink);color:var(--paper);padding:.7rem 1.4rem;border-radius:8px;font-size:1rem;cursor:pointer;font-family:var(--sans)}
+  .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .btn.secondary{background:#efe7d7;color:var(--ink);border:1px solid var(--line)}
+  .results{margin-top:1.2rem}
+  .result{border-left:4px solid var(--line);background:#fff;padding:.6rem .8rem;margin-bottom:.5rem;border-radius:0 6px 6px 0;font-size:.92rem}
+  .result.err{border-left-color:var(--err)}
+  .result.warn{border-left-color:var(--warn)}
+  .result.ok{border-left-color:var(--ok)}
+  .badge{display:inline-block;font-size:.72rem;font-weight:700;padding:.05rem .5rem;border-radius:20px;margin-right:.5rem;color:#fff;vertical-align:middle}
+  .badge.err{background:var(--err)}.badge.warn{background:var(--warn)}.badge.ok{background:var(--ok)}
+  .loc{font-family:var(--mono);font-size:.8rem;color:#6a5c48}
+  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header>
+  <h1>HTML タグ一覧 &amp; コードチェッカー</h1>
+  <p>HTML要素（タグ）を A→Z ＋記号 で解説。コードを貼り付けてバグもチェックできます。</p>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="ツール切替">
+  <button class="tab-btn" role="tab" id="tab-tags" aria-controls="panel-tags" aria-selected="true">HTMLタグ (A–Z)</button>
+  <button class="tab-btn" role="tab" id="tab-css" aria-controls="panel-css" aria-selected="false">CSS</button>
+  <button class="tab-btn" role="tab" id="tab-js" aria-controls="panel-js" aria-selected="false">JavaScript</button>
+  <button class="tab-btn" role="tab" id="tab-check" aria-controls="panel-check" aria-selected="false">コードチェッカー</button>
+</nav>
+
+<main>
+  <section id="panel-tags" role="tabpanel" aria-labelledby="tab-tags">
+    <h2>HTML タグ一覧</h2>
+    <p class="muted">A→Z 順。末尾に記号系（コメント・DOCTYPE・文字参照）を追加。カテゴリで絞り込みや検索ができます。</p>
+    <div class="catbar" id="catbar"></div>
+    <div class="toolbar">
+      <input class="search" id="search" type="search" placeholder="タグ名・用途で検索（例: img, リンク, table）" aria-label="タグ検索">
+      <span class="count" id="count"></span>
+    </div>
+    <table>
+      <caption>HTML 要素と使い方</caption>
+      <thead><tr><th>A–Z</th><th>タグ</th><th>分類</th><th>解説・使い方</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </section>
+
+  <section id="panel-css" role="tabpanel" aria-labelledby="tab-css" hidden>
+    <h2>CSS プロパティ一覧</h2>
+    <p class="muted">よく使う主要プロパティを A→Z 順で。末尾に @規則・擬似クラス・変数などの記号系を追加。用途と値の例つき。</p>
+    <div class="toolbar">
+      <input class="search" id="search-css" type="search" placeholder="プロパティ名・用途で検索（例: flex, 影, color）" aria-label="CSS検索">
+      <span class="count" id="count-css"></span>
+    </div>
+    <table>
+      <caption>CSS プロパティと使い方</caption>
+      <thead><tr><th>A–Z</th><th>プロパティ</th><th>用途</th><th>値の例</th></tr></thead>
+      <tbody id="tbody-css"></tbody>
+    </table>
+  </section>
+
+  <section id="panel-js" role="tabpanel" aria-labelledby="tab-js" hidden>
+    <h2>JavaScript 構文・メソッド一覧</h2>
+    <p class="muted">基本構文とよく使うメソッドを A→Z 順で。末尾に演算子・記号系を追加。分類と解説つき。</p>
+    <div class="toolbar">
+      <input class="search" id="search-js" type="search" placeholder="構文・メソッドで検索（例: map, async, 配列）" aria-label="JavaScript検索">
+      <span class="count" id="count-js"></span>
+    </div>
+    <table>
+      <caption>JavaScript 構文・メソッドと使い方</caption>
+      <thead><tr><th>A–Z</th><th>構文/メソッド</th><th>分類</th><th>解説・使い方</th></tr></thead>
+      <tbody id="tbody-js"></tbody>
+    </table>
+  </section>
+
+  <section id="panel-check" role="tabpanel" aria-labelledby="tab-check" hidden>
+    <h2>HTML コードチェッカー</h2>
+    <p class="muted">HTMLを貼り付けて「チェック実行」。タグの閉じ忘れ・不一致、括弧/引用符の不整合、必須要素の欠落などを検出します。※簡易チェックで完全な構文解析ではありません。</p>
+    <textarea id="code-input" placeholder="ここにHTMLを貼り付け…" spellcheck="false"></textarea>
+    <div class="toolbar">
+      <button class="btn" id="run-check">チェック実行</button>
+      <button class="btn secondary" id="clear-check">クリア</button>
+    </div>
+    <div class="results" id="check-results" aria-live="polite"></div>
+  </section>
+</main>
+
+<script>
+/* ===== HTML tag data: [letter, tag, category, description] ===== */
+const TAGS=[
+ ["A","<a>","テキスト","ハイパーリンク。<a href=\"url\">リンク</a>。target=\"_blank\" で別タブ"],
+ ["A","<abbr>","テキスト","略語。title属性に正式名称。<abbr title=\"HyperText…\">HTML</abbr>"],
+ ["A","<address>","セクション","連絡先情報。通常は斜体表示"],
+ ["A","<area>","埋め込み","イメージマップの領域。<map>内で使う。空要素"],
+ ["A","<article>","セクション","独立した記事・投稿のまとまり"],
+ ["A","<aside>","セクション","本文の傍らの補足（サイドバー等）"],
+ ["A","<audio>","メディア","音声を埋め込む。<audio controls src=\"a.mp3\">"],
+ ["B","<b>","テキスト","太字（見た目のみ／重要性は示さない）。強調は<strong>"],
+ ["B","<base>","メタ","相対URLの基準を指定。<head>内・空要素"],
+ ["B","<bdi>","テキスト","周囲と書字方向を分離するテキスト"],
+ ["B","<bdo>","テキスト","書字方向を強制。<bdo dir=\"rtl\">"],
+ ["B","<blockquote>","テキスト","引用ブロック。cite属性に出典URL"],
+ ["B","<body>","文書","文書の本文全体。1文書に1つ"],
+ ["B","<br>","テキスト","改行。空要素。<br>"],
+ ["B","<button>","フォーム","ボタン。<button type=\"submit\">送信</button>"],
+ ["C","<canvas>","メディア","JavaScriptで図形描画するための領域"],
+ ["C","<caption>","表","表のタイトル。<table>直下に置く"],
+ ["C","<cite>","テキスト","作品タイトルの引用（斜体表示）"],
+ ["C","<code>","テキスト","ソースコードの一部。等幅表示"],
+ ["C","<col>","表","列のグループ化スタイル指定。空要素"],
+ ["C","<colgroup>","表","複数列のまとめ"],
+ ["D","<data>","テキスト","機械可読な値を紐づける。value属性"],
+ ["D","<datalist>","フォーム","入力候補リスト。<input list> と連携"],
+ ["D","<dd>","リスト","定義リストの説明。<dl>内"],
+ ["D","<del>","テキスト","削除されたテキスト（取り消し線）"],
+ ["D","<details>","対話","開閉できる詳細。<summary>と併用"],
+ ["D","<dfn>","テキスト","定義される用語"],
+ ["D","<dialog>","対話","ダイアログ/モーダル。open属性やshowModal()"],
+ ["D","<div>","フロー","汎用のブロック区切り。レイアウトの箱"],
+ ["D","<dl>","リスト","定義リスト（用語と説明の組）"],
+ ["D","<dt>","リスト","定義リストの用語。<dl>内"],
+ ["E","<em>","テキスト","強調（斜体）。意味上の強調"],
+ ["E","<embed>","埋め込み","外部コンテンツ埋め込み。空要素"],
+ ["F","<fieldset>","フォーム","フォーム項目のグループ化"],
+ ["F","<figcaption>","セクション","<figure>のキャプション"],
+ ["F","<figure>","セクション","図・写真などのまとまり"],
+ ["F","<footer>","セクション","フッター（著作権・連絡先等）"],
+ ["F","<form>","フォーム","入力フォーム。action/methodを指定"],
+ ["H","<h1>–<h6>","セクション","見出し。h1が最上位。階層は飛ばさない"],
+ ["H","<head>","文書","メタ情報。title/meta/link等を格納"],
+ ["H","<header>","セクション","ヘッダー（ロゴ・ナビ等）"],
+ ["H","<hr>","フロー","主題の区切り（水平線）。空要素"],
+ ["H","<html>","文書","文書のルート要素。lang属性を付ける"],
+ ["I","<i>","テキスト","イタリック（専門用語・外来語など）"],
+ ["I","<iframe>","埋め込み","別ページを埋め込む。src属性"],
+ ["I","<img>","埋め込み","画像。<img src=\"x.jpg\" alt=\"説明\">。空要素・alt必須"],
+ ["I","<input>","フォーム","入力欄。type属性で種類指定。空要素"],
+ ["I","<ins>","テキスト","追加されたテキスト（下線）"],
+ ["K","<kbd>","テキスト","キーボード入力（等幅表示）"],
+ ["L","<label>","フォーム","入力欄のラベル。for属性でinputと関連付け"],
+ ["L","<legend>","フォーム","<fieldset>の見出し"],
+ ["L","<li>","リスト","リスト項目。<ul>/<ol>内"],
+ ["L","<link>","メタ","外部リソース参照（CSS等）。<head>内・空要素"],
+ ["M","<main>","セクション","文書の主要コンテンツ。1文書に1つ"],
+ ["M","<map>","埋め込み","イメージマップ定義。<area>と併用"],
+ ["M","<mark>","テキスト","ハイライト（黄色マーカー）"],
+ ["M","<menu>","リスト","操作項目のリスト（ul類似）"],
+ ["M","<meta>","メタ","文字コード・viewport等のメタ情報。空要素"],
+ ["M","<meter>","フォーム","範囲内の量（バッテリー等）。value/min/max"],
+ ["N","<nav>","セクション","ナビゲーションリンクのまとまり"],
+ ["N","<noscript>","スクリプト","JS無効時に表示する内容"],
+ ["O","<object>","埋め込み","外部リソース埋め込み（PDF等）"],
+ ["O","<ol>","リスト","順序付きリスト（番号）。<li>を含む"],
+ ["O","<optgroup>","フォーム","<option>のグループ化"],
+ ["O","<option>","フォーム","選択肢。<select>/<datalist>内"],
+ ["O","<output>","フォーム","計算・スクリプトの出力結果"],
+ ["P","<p>","テキスト","段落"],
+ ["P","<picture>","埋め込み","レスポンシブ画像。<source>+<img>"],
+ ["P","<pre>","テキスト","整形済みテキスト（空白・改行を保持）"],
+ ["P","<progress>","フォーム","進捗バー。value/max"],
+ ["Q","<q>","テキスト","短い引用（自動で引用符）"],
+ ["R","<rp>","テキスト","ルビ非対応時の括弧"],
+ ["R","<rt>","テキスト","ルビの読み仮名。<ruby>内"],
+ ["R","<ruby>","テキスト","ルビ（ふりがな）"],
+ ["S","<s>","テキスト","もはや正確でない内容（取り消し線）"],
+ ["S","<samp>","テキスト","プログラムの出力例（等幅）"],
+ ["S","<script>","スクリプト","JavaScript。src属性 or インライン"],
+ ["S","<section>","セクション","文書内の意味的な区分"],
+ ["S","<select>","フォーム","ドロップダウン。<option>を含む"],
+ ["S","<slot>","Web部品","Web Componentsの差込口"],
+ ["S","<small>","テキスト","注釈・細目（小さめ表示）"],
+ ["S","<source>","メディア","メディア/画像の候補。<picture>/<video>内・空要素"],
+ ["S","<span>","テキスト","汎用のインライン区切り"],
+ ["S","<strong>","テキスト","重要性の強い強調（太字）"],
+ ["S","<style>","メタ","文書内CSS。<head>内推奨"],
+ ["S","<sub>","テキスト","下付き文字（H₂O）"],
+ ["S","<summary>","対話","<details>の見出し（クリックで開閉）"],
+ ["S","<sup>","テキスト","上付き文字（x²）"],
+ ["T","<table>","表","表。tr/th/td等を含む"],
+ ["T","<tbody>","表","表の本体行グループ"],
+ ["T","<td>","表","表のデータセル"],
+ ["T","<template>","Web部品","描画されない再利用テンプレート"],
+ ["T","<textarea>","フォーム","複数行テキスト入力"],
+ ["T","<tfoot>","表","表のフッター行グループ"],
+ ["T","<th>","表","表の見出しセル"],
+ ["T","<thead>","表","表のヘッダー行グループ"],
+ ["T","<time>","テキスト","日時。datetime属性に機械可読値"],
+ ["T","<title>","メタ","ページタイトル。<head>内・必須"],
+ ["T","<tr>","表","表の行"],
+ ["T","<track>","メディア","字幕トラック。<video>内・空要素"],
+ ["U","<u>","テキスト","非言語的な下線（固有名など）"],
+ ["U","<ul>","リスト","順序なしリスト（黒丸）。<li>を含む"],
+ ["V","<var>","テキスト","変数（斜体）"],
+ ["V","<video>","メディア","動画。<video controls src=\"v.mp4\">"],
+ ["W","<wbr>","テキスト","改行してよい位置の候補。空要素"],
+ /* ==== symbols / special after Z ==== */
+ ["#","<!DOCTYPE html>","宣言","文書型宣言。ファイル先頭に必須（HTML5）"],
+ ["#","<!-- -->","コメント","コメント。<!-- メモ --> 表示されない"],
+ ["#","&amp;","文字参照","& の表記。HTML中で & をそのまま書けない"],
+ ["#","&lt; / &gt;","文字参照","< と > の表記。タグと区別するため"],
+ ["#","&quot; / &#39;","文字参照","\" と ' の表記"],
+ ["#","&nbsp;","文字参照","改行しない空白（ノーブレークスペース）"],
+ ["#","&copy; / &reg;","文字参照","© と ® の記号"],
+ ["#","&#10084; 等","数値参照","文字を数値コードで表す。&#十進; / &#x十六進;"],
+];
+
+const CATS=["すべて","文書","メタ","セクション","テキスト","リスト","表","フォーム","メディア","埋め込み","フロー","スクリプト","対話","Web部品","宣言","コメント","文字参照","数値参照"];
+let curCat="すべて";
+
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function renderCats(){
+  document.getElementById("catbar").innerHTML=CATS.map(c=>
+    `<button class="chip" data-cat="${esc(c)}" aria-pressed="${c===curCat}">${esc(c)}</button>`).join("");
+  document.querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{
+    curCat=b.dataset.cat;renderCats();render();
+  }));
+}
+function render(){
+  const q=document.getElementById("search").value.trim().toLowerCase();
+  const rows=TAGS.filter(r=>{
+    const catOk=curCat==="すべて"||r[2]===curCat;
+    const qOk=!q||r.join(" ").toLowerCase().includes(q);
+    return catOk&&qOk;
+  });
+  document.getElementById("tbody").innerHTML=rows.map(r=>
+    `<tr><td class="letter">${esc(r[0])}</td><td><code>${esc(r[1])}</code></td>`
+    +`<td><span class="tag-cat">${esc(r[2])}</span></td><td>${esc(r[3])}</td></tr>`).join("");
+  document.getElementById("count").textContent=`${rows.length} 件`;
+}
+renderCats();render();
+document.getElementById("search").addEventListener("input",render);
+
+/* ===== CSS data: [letter, property, use, example] ===== */
+const CSS=[
+ ["A","align-items","フレックス/グリッドの交差軸方向の揃え","center / flex-start / stretch"],
+ ["A","animation","アニメーションの一括指定","fade 2s ease infinite"],
+ ["B","background","背景の一括指定（色・画像）","#fff url(bg.png) no-repeat center"],
+ ["B","border","枠線の一括指定","1px solid #333"],
+ ["B","border-radius","角丸","8px / 50%"],
+ ["B","box-shadow","影","0 2px 8px rgba(0,0,0,.2)"],
+ ["B","box-sizing","幅の計算基準","border-box（paddingを幅に含める）"],
+ ["C","color","文字色","#1a1207 / rgb(26,18,7)"],
+ ["C","cursor","マウスカーソル形状","pointer / default / not-allowed"],
+ ["D","display","表示形式","flex / grid / block / inline / none"],
+ ["F","filter","視覚効果","blur(4px) / grayscale(1)"],
+ ["F","flex","フレックス子要素の伸縮","1 / 0 0 auto"],
+ ["F","flex-direction","フレックスの主軸方向","row / column"],
+ ["F","flex-wrap","フレックスの折返し","wrap / nowrap"],
+ ["F","font-family","フォント指定","system-ui, sans-serif"],
+ ["F","font-size","文字サイズ","1rem / clamp(1rem,2vw,1.5rem)"],
+ ["F","font-weight","文字の太さ","400 / 700 / bold"],
+ ["G","gap","フレックス/グリッドの間隔","1rem / 8px 16px"],
+ ["G","grid-template-columns","グリッド列の定義","repeat(3,1fr) / 200px auto"],
+ ["H","height","高さ","100vh / auto / 100%"],
+ ["J","justify-content","主軸方向の揃え","space-between / center"],
+ ["L","letter-spacing","字間",".02em / 1px"],
+ ["L","line-height","行の高さ","1.7 / 1.5"],
+ ["M","margin","外側の余白","0 auto / 1rem"],
+ ["O","opacity","不透明度","0〜1（0.5 で半透明）"],
+ ["O","overflow","はみ出し処理","hidden / auto / scroll"],
+ ["P","padding","内側の余白","1rem / .5rem 1rem"],
+ ["P","position","配置方式","relative / absolute / fixed / sticky"],
+ ["T","text-align","行揃え","left / center / right"],
+ ["T","text-decoration","下線・打消し線","none / underline"],
+ ["T","transform","変形","translateX(10px) / rotate(45deg) / scale(1.1)"],
+ ["T","transition","変化の遷移","all .3s ease"],
+ ["W","width","幅","100% / max-content / 300px"],
+ ["Z","z-index","重なり順","10（position指定要素で有効）"],
+ /* ==== symbols after Z ==== */
+ ["#","@media","メディアクエリ（レスポンシブ）","@media (max-width:600px){…}"],
+ ["#","@keyframes","アニメーション定義","@keyframes fade{from{opacity:0}to{opacity:1}}"],
+ ["#","@import","外部CSS読込","@import url(\"base.css\");"],
+ ["#","@font-face","Webフォント定義","@font-face{font-family:…;src:url(…)}"],
+ ["#",":hover","擬似クラス（マウスオーバー）","a:hover{color:red}"],
+ ["#",":focus-visible","擬似クラス（キーボード焦点）","btn:focus-visible{outline:…}"],
+ ["#","::before / ::after","擬似要素（前後に生成）","p::before{content:\"※\"}"],
+ ["#","--変数 / var()","カスタムプロパティ（変数）",":root{--c:#333} color:var(--c)"],
+ ["#","!important","優先度を最大化","color:red !important（多用は非推奨）"],
+];
+
+/* ===== JS data: [letter, name, category, description] ===== */
+const JS=[
+ ["A","addEventListener()","イベント","要素にイベント登録。el.addEventListener('click',fn)"],
+ ["A","async / await","構文","非同期を同期的に記述。const r=await fetch(url)"],
+ ["C","classList","DOM","クラス操作。el.classList.add/remove/toggle('x')"],
+ ["C","console.log()","デバッグ","コンソールに出力。console.log(値)"],
+ ["C","const / let","宣言","再代入不可 / 可のブロックスコープ変数"],
+ ["D","document.getElementById()","DOM","id で要素取得"],
+ ["D","document.querySelector()","DOM","CSSセレクタで最初の要素取得。('.x','#y')"],
+ ["D","document.querySelectorAll()","DOM","該当する全要素を取得（NodeList）"],
+ ["F","fetch()","通信","HTTP通信。fetch(url).then(r=>r.json())"],
+ ["F","filter()","配列","条件に合う要素を抽出。arr.filter(x=>x>0)"],
+ ["F","find()","配列","条件に最初に合う要素。arr.find(x=>x.id===1)"],
+ ["F","for / for...of","ループ","繰り返し。for(const x of arr){…}"],
+ ["F","forEach()","配列","各要素に処理。arr.forEach(x=>…)"],
+ ["F","function / =>","関数","function f(){} または const f=()=>{}"],
+ ["I","if / else","条件分岐","if(cond){…}else{…}"],
+ ["I","includes()","配列/文字列","含むか判定。arr.includes(3) / str.includes('a')"],
+ ["J","JSON.parse()","JSON","文字列→オブジェクト変換"],
+ ["J","JSON.stringify()","JSON","オブジェクト→文字列変換"],
+ ["M","map()","配列","各要素を変換した新配列。arr.map(x=>x*2)"],
+ ["O","Object.keys()","オブジェクト","キー一覧の配列。Object.keys(obj)"],
+ ["P","parseInt() / parseFloat()","変換","文字列→数値。parseInt('42')"],
+ ["P","Promise","非同期","new Promise((resolve,reject)=>{…})"],
+ ["P","push() / pop()","配列","末尾に追加 / 末尾を削除"],
+ ["R","reduce()","配列","集約。arr.reduce((a,b)=>a+b,0)"],
+ ["R","return","構文","関数から値を返す"],
+ ["S","setTimeout()","タイマー","一定時間後に実行。setTimeout(fn,1000)"],
+ ["S","setInterval()","タイマー","一定間隔で繰り返し実行"],
+ ["S","slice() / splice()","配列","部分取得 / 挿入・削除"],
+ ["S","sort()","配列","並べ替え。arr.sort((a,b)=>a-b)"],
+ ["S","split() / join()","文字列/配列","文字列→配列 / 配列→文字列"],
+ ["T","try / catch","例外処理","try{…}catch(e){…}"],
+ ["T","typeof","演算子","型判定。typeof x === 'string'"],
+ ["W","while","ループ","条件が真の間繰り返す。while(cond){…}"],
+ /* ==== symbols after Z ==== */
+ ["#","=> (アロー関数)","構文","短い関数記法。x => x*2"],
+ ["#","... (スプレッド)","構文","展開。[...arr] / {...obj} / f(...args)"],
+ ["#","`...${}` (テンプレート)","構文","バッククォート文字列。`Hello ${name}`"],
+ ["#","?. (オプショナル連鎖)","演算子","安全なプロパティ参照。obj?.a?.b"],
+ ["#","?? (Null合体)","演算子","null/undefined時の既定値。x ?? '既定'"],
+ ["#","=== / !==","演算子","厳密等価/不等価（型も比較。== より推奨）"],
+ ["#","&& / || / !","演算子","論理積 / 論理和 / 否定"],
+ ["#","? : (三項演算子)","演算子","条件 ? 真の値 : 偽の値"],
+];
+
+function renderCss(){
+  const q=document.getElementById("search-css").value.trim().toLowerCase();
+  const rows=CSS.filter(r=>!q||r.join(" ").toLowerCase().includes(q));
+  document.getElementById("tbody-css").innerHTML=rows.map(r=>
+    `<tr><td class="letter">${esc(r[0])}</td><td><code>${esc(r[1])}</code></td>`
+    +`<td>${esc(r[2])}</td><td><code>${esc(r[3])}</code></td></tr>`).join("");
+  document.getElementById("count-css").textContent=`${rows.length} 件`;
+}
+function renderJs(){
+  const q=document.getElementById("search-js").value.trim().toLowerCase();
+  const rows=JS.filter(r=>!q||r.join(" ").toLowerCase().includes(q));
+  document.getElementById("tbody-js").innerHTML=rows.map(r=>
+    `<tr><td class="letter">${esc(r[0])}</td><td><code>${esc(r[1])}</code></td>`
+    +`<td><span class="tag-cat">${esc(r[2])}</span></td><td>${esc(r[3])}</td></tr>`).join("");
+  document.getElementById("count-js").textContent=`${rows.length} 件`;
+}
+renderCss();renderJs();
+document.getElementById("search-css").addEventListener("input",renderCss);
+document.getElementById("search-js").addEventListener("input",renderJs);
+
+/* ===== tabs ===== */
+const tabs=[["tab-tags","panel-tags"],["tab-css","panel-css"],["tab-js","panel-js"],["tab-check","panel-check"]];
+tabs.forEach(([t,p])=>document.getElementById(t).addEventListener("click",()=>{
+  tabs.forEach(([tt,pp])=>{const s=tt===t;document.getElementById(tt).setAttribute("aria-selected",s);document.getElementById(pp).hidden=!s;});
+}));
+
+/* ===== HTML checker ===== */
+const VOID=new Set(["area","base","br","col","embed","hr","img","input","link","meta","param","source","track","wbr"]);
+
+function checkBracketsQuotes(code){
+  const out=[];let inStr=null,line=1;
+  for(let i=0;i<code.length;i++){
+    const ch=code[i],prev=code[i-1];
+    if(ch==="\n")line++;
+    if(inStr){if(ch===inStr)inStr=null;continue;}
+    if(ch==='"'||ch==="'"){
+      // only track quotes that look like they're inside a tag context loosely
+      inStr=ch;
+    }
+  }
+  if(inStr)out.push(["warn",`閉じられていない引用符 (${inStr}) の可能性`,""]);
+  return out;
+}
+
+function checkTags(code){
+  const out=[];
+  const lineAt=idx=>code.slice(0,idx).split("\n").length;
+  const re=/<(\/?)([a-zA-Z][a-zA-Z0-9-]*)\b[^>]*?(\/?)>/g;
+  const stack=[];let m;
+  while((m=re.exec(code))){
+    const closing=m[1]==="/",tag=m[2].toLowerCase(),self=m[3]==="/"||VOID.has(tag);
+    if(closing){
+      let found=-1;
+      for(let i=stack.length-1;i>=0;i--){if(stack[i].tag===tag){found=i;break;}}
+      if(found<0){out.push(["err",`対応する開始タグのない </${tag}>`,`行 ${lineAt(m.index)}`]);}
+      else{
+        for(let i=stack.length-1;i>found;i--)out.push(["warn",`<${stack[i].tag}> が閉じられていない可能性`,`行 ${stack[i].line}`]);
+        stack.length=found;
+      }
+    }else if(!self){stack.push({tag,line:lineAt(m.index)});}
+  }
+  stack.forEach(s=>out.push(["err",`閉じられていない <${s.tag}>`,`行 ${s.line}`]));
+  return out;
+}
+
+function checkUnclosedAngle(code){
+  const out=[];
+  // a '<' that starts a tag name but has no '>' before next '<'
+  const re=/<[a-zA-Z\/!][^>]*$/gm;
+  let m;
+  while((m=re.exec(code))){
+    if(!/>/.test(m[0]))out.push(["warn","'>' が不足しているタグの可能性",`行 ${code.slice(0,m.index).split("\n").length}`]);
+  }
+  return out;
+}
+
+function checkStructure(code){
+  const out=[];
+  const has=re=>re.test(code);
+  if(!/<!DOCTYPE/i.test(code))out.push(["warn","<!DOCTYPE html> がありません（先頭に推奨）",""]);
+  if(!/<html[\s>]/i.test(code))out.push(["warn","<html> 要素が見当たりません",""]);
+  else if(!/<html[^>]*\blang=/i.test(code))out.push(["warn","<html> に lang 属性がありません（推奨）",""]);
+  if(/<head[\s>]/i.test(code)&&!/<meta[^>]*charset/i.test(code))out.push(["warn","<meta charset> がありません（推奨）",""]);
+  if(/<head[\s>]/i.test(code)&&!/<title[\s>]/i.test(code))out.push(["warn","<title> がありません（推奨）",""]);
+  // img alt
+  const imgs=code.match(/<img\b[^>]*>/gi)||[];
+  imgs.forEach(t=>{if(!/\balt=/i.test(t))out.push(["warn",`<img> に alt 属性がありません: ${t.slice(0,40)}…`,""]);});
+  // duplicate id
+  const ids=[...code.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)].map(m=>m[1]);
+  const seen={},dup=new Set();
+  ids.forEach(id=>{if(seen[id])dup.add(id);seen[id]=1;});
+  dup.forEach(id=>out.push(["err",`id が重複しています: "${id}"`,""]));
+  return out;
+}
+
+function runCheck(){
+  const code=document.getElementById("code-input").value;
+  const box=document.getElementById("check-results");
+  if(!code.trim()){box.innerHTML=`<div class="result warn"><span class="badge warn">空</span>HTMLを入力してください。</div>`;return;}
+  let issues=[]
+    .concat(checkTags(code))
+    .concat(checkUnclosedAngle(code))
+    .concat(checkBracketsQuotes(code))
+    .concat(checkStructure(code));
+  if(issues.length===0){
+    box.innerHTML=`<div class="result ok"><span class="badge ok">OK</span>明らかなバグは検出されませんでした（簡易チェック）。`
+      +`<div class="muted">※W3C Validator 等での最終確認を推奨します。</div></div>`;
+    return;
+  }
+  const order={err:0,warn:1,ok:2};
+  issues.sort((a,b)=>order[a[0]]-order[b[0]]);
+  box.innerHTML=issues.map(([lvl,msg,loc])=>{
+    const label=lvl==="err"?"エラー":lvl==="warn"?"警告":"情報";
+    return `<div class="result ${lvl}"><span class="badge ${lvl}">${label}</span>${esc(msg)} `
+      +(loc?`<span class="loc">${esc(loc)}</span>`:"")+`</div>`;
+  }).join("");
+}
+document.getElementById("run-check").addEventListener("click",runCheck);
+document.getElementById("clear-check").addEventListener("click",()=>{
+  document.getElementById("code-input").value="";
+  document.getElementById("check-results").innerHTML="";
+});
+</script>
+</body>
+</html>
